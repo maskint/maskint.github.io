@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="MaskINT: Video Editing via Interpolative Non-autoregressive Masked Transformers">
+  <meta name="keywords" content="maskint,maskgit">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MaskINT: Video Editing Masked Transformers</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+       <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav> -->
+
+
+<!-- title, authors -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">MaskINT: Video Editing via Interpolative Non-autoregressive Masked Transformers</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://ics.uci.edu/~haoyum3">Haoyu Ma</a><sup>1*</sup>,</span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=jV23kBAAAAAJ&hl=en">Shahin Mahdizadehaghdam</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=K3QJPdMAAAAJ&hl=en">Bichen Wu</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=Nb6ggPwAAAAJ&hl=en">Zhipeng Fan</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://ycgu.site/">Yuchao Gu</a><sup>3</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?hl=en&user=i_IGhWsAAAAJ&view_op=list_works&sortby=pubdate">Wenliang Zhao</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.linkedin.com/in/liorsh/">Lior Shapira</a><sup>2</sup>
+            </span>
+  
+            <span class="author-block">
+              <a href="https://ics.uci.edu/~xhx/">Xiaohui Xie</a><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>University of California, Irvine</span>
+            <span class="author-block"><sup>2</sup>GenAI, Meta</span>
+            <span class="author-block"><sup>3</sup>National University of Singapore</span>
+          </div>
+
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- <span class="link-block">
+                <a href="https://arxiv.org/abs/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span> -->
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="."
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!--Teaser Video-->
+<!-- <section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+     
+    </div>
+  </div>
+</section> -->
+
+
+
+<!-- Abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Recent advances in generative AI have significantly enhanced image and video editing, particularly in the context of text prompt control. 
+            State-of-the-art approaches predominantly rely on diffusion models to accomplish these tasks. 
+            However, the computational demands of diffusion-based methods are substantial, often necessitating large-scale paired datasets for training, and therefore challenging the deployment in practical applications.
+            This study addresses this challenge by breaking down the text-based video editing process into two separate stages. 
+            </p>
+            <p>
+            In the first stage, we leverage an existing text-to-image diffusion model to simultaneously edit a few keyframes without additional fine-tuning. 
+            In the second stage, we introduce an efficient model called MaskINT, which is built on non-autoregressive masked generative transformers and specializes in frame interpolation between the keyframes, benefiting from structural guidance provided by intermediate frames. 
+            Our comprehensive set of experiments illustrates the efficacy and efficiency of MaskINT when compared to other diffusion-based methodologies. 
+            This research offers a practical solution for text-based video editing and showcases the potential of non-autoregressive masked generative transformers in this domain.
+           </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->    
+</div></section>
+
+
+
+
+
+<!-- Method -->
+ <section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method</h2>
+        <div class="content has-text-justified">
+          <p> 
+            We propose to disentangle the text-based video editing into a two stage pipeline, that involves keyframes joint editing using existing image diffusion model and structure-aware frame interpolation with masked generative transformers trained on video only datasets.
+          </p> 
+    
+          <p>
+            We propose MaskINT to perform structure-aware frame interpolation, which is the pioneer work that explicitly introduces structure control into non-autoregressive generative transformers.
+          </p> 
+          <p>
+            Experimental results demonstrate that our method achieves comparable performance with diffusion methods in terms of temporal consistency and alignment with text prompts, while providing 5-7 times faster inference times. 
+          </p>
+         <img src="./static/images/framework.png" alt="" width="1000">
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+</section>
+
+
+<!--  Results -->
+
+
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-">
+          <h2 class="title is-3">MaskINT Editing Results</h2>
+          <div class="content has-text-justified">
+        
+      <table width="800" border="0">
+        <tbody>
+
+          <!-- Input video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/airplane/input.mp4">
+                <video preload="auto" width="384" src="static/videos/airplane/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos/dog_run/input.mp4">
+                <video preload="auto" width="384" src="static/videos/dog_run/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/dogcar/input.mp4">
+                <video preload="auto" width="384" src="static/videos/dogcar/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+
+          <!-- Output video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/dog_wolf/output.mp4">
+                <video preload="auto" width="384" src="static/videos/dog_wolf/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos/dog_run/output.mp4">
+                <video preload="auto" width="384" src="static/videos/dog_run/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/dogcar/output.mp4">
+                <video preload="auto" width="384" src="static/videos/dogcar/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+
+          <!-- Prompt x3 -->
+          <tr>
+            <td width="25%" style="text-align:center;">"a wolf"</td>
+            <td width="25%" style="text-align:center;">"black poodle dog runs"</td>
+              <td width="25%" style="text-align:center;">"a dog looking through car window, van gogh style"</td>
+          </tr>
+
+          <!-- ------------------------------------------------------------------------------------- -->
+
+          <!-- Input video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/lion/input.mp4">
+                <video preload="auto" width="384" src="static/videos/lion/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos//bear_panda/input.mp4">
+                <video preload="auto" width="384" src="static/videos/bear_panda/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/rhino/input.mp4">
+                <video preload="auto" width="384" src="static/videos/rhino/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+          
+          <!-- Output video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/lion/output.mp4">
+                <video preload="auto" width="384" src="static/videos/lion/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos/bear_panda/output.mp4">
+                <video preload="auto" width="384" src="static/videos/bear_panda/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/rhino/output.mp4">
+                <video preload="auto" width="384" src="static/videos/rhino/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+
+          <!-- Prompt x3 -->
+          <tr>
+            <td width="25%" style="text-align:center;">"a male lion on ice in snowy day"</td>
+            <td width="25%" style="text-align:center;">"a panda"</td>
+              <td width="25%" style="text-align:center;">"a rhino walks on ice in snowy day"</td>
+          </tr>
+          
+
+          <!-- --------------------------------------------------------  -->
+
+          <!-- Input video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/pig_money/input.mp4">
+                <video preload="auto" width="384" src="static/videos/pig_money/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos/man_hike/input.mp4">
+                <video preload="auto" width="384" src="static/videos/man_hike/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/fish/input.mp4">
+                <video preload="auto" width="384" src="static/videos/fish/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+          
+          <!-- Output video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/pig_money/output.mp4">
+                <video preload="auto" width="384" src="static/videos/pig_money/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos/man_hike/output.mp4">
+                <video preload="auto" width="384" src="static/videos/man_hike/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/fish/output.mp4">
+                <video preload="auto" width="384" src="static/videos/fish/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+
+          <!-- Prompt x3 -->
+          <tr>
+            <td width="25%" style="text-align:center;">"cute plastic pig money bank"</td>
+            <td width="25%" style="text-align:center;">"a man hikes in autumn"</td>
+              <td width="25%" style="text-align:center;">"frozen fish in water"</td>
+          </tr>
+
+          
+          <!-- --------------------------------------------------------  -->
+
+          <!-- Input video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/car_vangogh/input.mp4">
+                <video preload="auto" width="384" src="static/videos/car_vangogh/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos/airplane/input.mp4">
+                <video preload="auto" width="384" src="static/videos/airplane/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/boat/input.mp4">
+                <video preload="auto" width="384" src="static/videos/boat/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+          
+          <!-- Output video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/car_vangogh/output.mp4">
+                <video preload="auto" width="384" src="static/videos/car_vangogh/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos/airplane/output.mp4">
+                <video preload="auto" width="384" src="static/videos/airplane/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/boat/output.mp4">
+                <video preload="auto" width="384" src="static/videos/boat/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+
+          <!-- Prompt x3 -->
+          <tr>
+            <td width="25%" style="text-align:center;">"a car drives on asphalt road in mountain van gogh style"</td>
+            <td width="25%" style="text-align:center;">"a blue airplane flies away in the dark night"</td>
+              <td width="25%" style="text-align:center;">"a boat sails on green grass"</td>
+          </tr>
+          
+
+        </tbody>
+      </table>
+
+
+      <hr>
+
+      <strong>Long video editing: </strong>
+      <table width="800" border="0">
+        <tbody>
+
+          <!-- Input video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/car/input.mp4">
+                <video preload="auto" width="384" src="static/videos/car/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos/kitesurf/input.mp4">
+                <video preload="auto" width="384" src="static/videos/kitesurf/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/snowboard/input.mp4">
+                <video preload="auto" width="384" src="static/videos/snowboard/input.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+
+          <!-- Output video x3 -->
+          <tr class="video-row">
+            <td style="text-align: center;">
+              <a href="static/videos/car/output.mp4">
+                <video preload="auto" width="384" src="static/videos/car/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+            
+    
+            <td style="text-align: center;">
+              <a href="static/videos/kitesurf/output.mp4">
+                <video preload="auto" width="384" src="static/videos/kitesurf/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+
+            <td style="text-align: center;">
+              <a href="static/videos/snowboard/output.mp4">
+                <video preload="auto" width="384" src="static/videos/snowboard/output.mp4" autoplay="" loop="" controls="" muted="">
+              </video></a>
+            </td>
+          </tr>
+
+          <!-- Prompt x3 -->
+          <tr>
+            <td width="25%" style="text-align:center;">"a car drives on ice road in snowy day"</td>
+            <td width="25%" style="text-align:center;">"two men play kite surf, van gogh style"</td>
+              <td width="25%" style="text-align:center;">"a man with black clothes on snowboard on sand in desert"</td>
+          </tr>
+
+          <!-- --------------------------------------------------------  -->
+
+        </tbody>
+      </table>  
+      </div>
+      </div>
+  </div></div></div>
+</section>
+
+
+
+
+
+
+
+<!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fish/input.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+ -->
+
+
+
+
+
+
+<!--BibTeX-->
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{ma2023maskint,
+  author    = {Ma, Haoyu and Mahdizadehaghdam, Shahin and Wu, Bichen and Fan, Zhipeng and Gu, Yuchao and Zhao, Wenliang and Shapira, Lior and Xie, Xiaohui},
+  title     = {MaskINT: Video Editing via Interpolative Non-autoregressive Masked Transformers},
+  journal   = {arxiv preprint},
+  year      = {2023},
+}</code></pre>
+  </div>
+</section>
+
+
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This means you are free to borrow the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
