@@ -1,7 +1,7 @@
-# Nerfies
+# MaskINT
 
 
-This is the project page for MaskINT
+This is the project page for [MaskINT](https://arxiv.org/pdf/2312.12468.pdf)
 
 
 # Website License
